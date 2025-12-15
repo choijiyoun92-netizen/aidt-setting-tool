@@ -211,14 +211,17 @@
 
   return rows.map(row =>
     [...row.querySelectorAll("td")]
-      .slice(0, 12)
-      .map(cell =>
-        cell.innerHTML
-          .replace(/<br\s*\/?>/g, "\n")
-          .replace(/"/g, "")
-          .replace(/>/g, "")
-          .trim()
-      )
+      .slice(1, 13) // 번호 컬럼 제외
+      .map((cell, i) => {
+
+        // ✅ [분류] 컬럼 (index 8)
+        if (i === 8) {
+          return cell.querySelector(".tag")?.innerText.trim() || "";
+        }
+
+        // ✅ 나머지는 모두 순수 텍스트로
+        return cell.innerText.replace(/\n+/g, "\n").trim();
+      })
   );
 }
 function saveToServer() {
@@ -455,23 +458,23 @@ if (i === 9) {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td>0</td>
-          <td>${row[1]}</td>
-          <td>${row[2]}</td>
-          <td>${row[3]}</td>
-          <td>${row[4]}</td>
-          <td>${row[5]}</td>
-          <td>${row[6]}</td>
-          <td>${row[7]}</td>
-          <td>${row[8]}</td>
-          <td><span class="tag ${row[9]}">${row[9]}</span></td>
-          <td>${row[10]}</td>
-          <td>${row[11]}</td>
-          <td>
-            <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
-            <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
-          </td>
-        `;
+  <td>0</td>
+  <td>${row[0]}</td>
+  <td>${row[1]}</td>
+  <td>${row[2]}</td>
+  <td>${row[3]}</td>
+  <td>${row[4]}</td>
+  <td>${row[5]}</td>
+  <td>${row[6]}</td>
+  <td>${row[7]}</td>
+  <td><span class="tag ${row[8]}">${row[8]}</span></td>
+  <td>${row[9]}</td>
+  <td>${row[10]}</td>
+  <td>
+    <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
+    <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
+  </td>
+`;
 
         table.appendChild(tr);
       });
@@ -485,6 +488,7 @@ if (i === 9) {
 
 </body>
 </html>
+
 
 
 
