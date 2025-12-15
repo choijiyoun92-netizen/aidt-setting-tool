@@ -448,35 +448,36 @@ if (i === 9) {
     .then(data => {
       const table = document.getElementById("featureTable");
 
-      // 🔹 기존 행 전부 제거 (입력 행 제외)
+      // 기존 행 제거
       table
         .querySelectorAll("tr:not(.row-input):not(:first-child)")
         .forEach(tr => tr.remove());
 
-      // 🔹 첫 줄이 헤더라면 제거
       data.forEach(row => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-  <td>0</td>
-  <td>${row[0] || ""}</td>   <!-- 기능명 -->
-  <td>${row[1] || ""}</td>   <!-- 기능설명 -->
-  <td>${row[2] || ""}</td>   <!-- 현재위치 -->
-  <td>${row[3] || ""}</td>   <!-- 사용빈도 -->
-  <td>${row[4] || ""}</td>   <!-- 중요도 -->
-  <td>${row[5] || ""}</td>   <!-- 복잡도 -->
-  <td>${row[6] || ""}</td>   <!-- CS -->
-  <td>${row[7] || ""}</td>   <!-- 자동화 -->
-  <td>
-    <span class="tag ${row[8] || ""}">${row[8] || ""}</span>
-  </td>                      <!-- 분류 -->
-  <td>${row[9] || ""}</td>   <!-- LITE -->
-  <td>${row[10] || ""}</td>  <!-- 비고 -->
-  <td>
-    <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
-    <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
-  </td>
-`;
+          <td>0</td>
+          <td>${row["기능명"] || ""}</td>
+          <td>${row["기능설명"] || ""}</td>
+          <td>${row["현재위치"] || ""}</td>
+          <td>${row["사용빈도"] || ""}</td>
+          <td>${row["중요도"] || ""}</td>
+          <td>${row["복잡도"] || ""}</td>
+          <td>${row["CS"] || ""}</td>
+          <td>${row["자동화"] || ""}</td>
+          <td>
+            <span class="tag ${row["분류"] || ""}">
+              ${row["분류"] || ""}
+            </span>
+          </td>
+          <td>${row["LITE"] || ""}</td>
+          <td>${row["비고"] || ""}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
+          </td>
+        `;
 
         table.appendChild(tr);
       });
@@ -485,11 +486,13 @@ if (i === 9) {
       enableRowDrag();
     });
 }
+
 </script>
 
 
 </body>
 </html>
+
 
 
 
