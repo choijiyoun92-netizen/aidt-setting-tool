@@ -277,15 +277,20 @@ function saveToServer() {
 
     table.appendChild(newRow);
 
-    // 입력칸 초기화
-    document.querySelectorAll(".row-input input").forEach(el => el.value = "");
-    document.getElementById("f-use").value = "높음";
-    document.getElementById("f-important").value = "필수";
-    document.getElementById("f-complex").value = "높음";
-    document.getElementById("f-cs").value = "높음";
-    document.getElementById("f-auto").value = "가능";
-    document.getElementById("f-type").value = "필수";
-    document.getElementById("f-lite").value = "보임";
+// 🔹 input 초기화
+document.querySelectorAll(".row-input input").forEach(el => el.value = "");
+
+// 🔹 textarea 초기화 (핵심)
+document.querySelectorAll(".row-input textarea").forEach(el => el.value = "");
+
+// 🔹 select 기본값 초기화
+document.getElementById("f-use").value = "높음";
+document.getElementById("f-important").value = "필수";
+document.getElementById("f-complex").value = "높음";
+document.getElementById("f-cs").value = "높음";
+document.getElementById("f-auto").value = "가능";
+document.getElementById("f-type").value = "필수";
+document.getElementById("f-lite").value = "보임";
 
     updateRowNumbers();
     saveToServer();
@@ -438,4 +443,5 @@ if (i === 9) {
 
 </body>
 </html>
+
 
