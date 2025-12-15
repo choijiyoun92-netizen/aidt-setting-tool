@@ -205,62 +205,29 @@
 
 <script>
     const textareaCols = [1, 2, 3]; // 기능명, 기능 설명, 현재 위치
-    function saveToLocalStorage() {
-    const table = document.getElementById("featureTable");
-    const rows = [...table.querySelectorAll("tr")].slice(2);
+    const API_URL = "https://script.google.com/macros/s/AKfycby9zaX2FxQebRUzEpgcOAIBDE47WmgOmNR1596nPg7YKY3yK4S_NIyV6BNCoyYaTIqH/execRL";
+    function collectTableData() {
+  const rows = [...document.querySelectorAll("#featureTable tr")].slice(2);
 
-    const data = rows.map(row => {
-        return [...row.querySelectorAll("td")]
-            .slice(1, 12)
-            .map((cell, i) => {
-
-                // 🔥 분류 컬럼 (index 8) → 무조건 "텍스트만"
-                if (i === 8) {
-    const tag = cell.querySelector(".tag");
-    return tag ? tag.innerText.trim() : cell.innerText.trim();
+  return rows.map(row =>
+    [...row.querySelectorAll("td")]
+      .slice(0, 12)
+      .map(cell =>
+        cell.innerHTML
+          .replace(/<br\s*\/?>/g, "\n")
+          .replace(/"/g, "")
+          .replace(/>/g, "")
+          .trim()
+      )
+  );
 }
-                return cell.innerHTML.trim();
-            });
-    });
-
-    localStorage.setItem("featureData", JSON.stringify(data));
+function saveToServer() {
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(collectTableData())
+  });
 }
-
-    function loadFromLocalStorage() {
-        const saved = localStorage.getItem("featureData");
-        if (!saved) return;
-
-        const rows = JSON.parse(saved);
-        const table = document.getElementById("featureTable");
-
-        rows.forEach(cols => {
-            const newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>0</td>
-                <td>${cols[0]}</td>
-                <td>${cols[1]}</td>
-                <td>${cols[2]}</td>
-                <td>${cols[3]}</td>
-                <td>${cols[4]}</td>
-                <td>${cols[5]}</td>
-                <td>${cols[6]}</td>
-                <td>${cols[7]}</td>
-                <td><span class="tag ${cols[8]}">${cols[8]}</span></td>
-                <td>${cols[9]}</td>
-                <td>${cols[10]}</td>
-                <td>
-                    <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
-                    <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
-                </td>
-            `;
-            table.appendChild(newRow);
-        });
-
-        updateRowNumbers();
-    }
-
     window.onload = () => {
-        loadFromLocalStorage();
         enableRowDrag();
     };
 
@@ -321,7 +288,7 @@
     document.getElementById("f-lite").value = "보임";
 
     updateRowNumbers();
-    saveToLocalStorage();
+    saveToServer();
     enableRowDrag();
 }
 
@@ -330,7 +297,7 @@
         if (confirm("정말 삭제하시겠습니까?")) {
             btn.closest("tr").remove();
             updateRowNumbers();
-            saveToLocalStorage();
+            saveToServer();
         }
     }
 
@@ -421,7 +388,7 @@ if (i === 9) {
         `<button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>`;
 
     updateRowNumbers();
-    saveToLocalStorage();
+    saveToServer();
 }
 
 
@@ -446,7 +413,7 @@ if (i === 9) {
                 draggingRow.classList.remove("dragging");
                 draggingRow = null;
                 updateRowNumbers();
-                saveToLocalStorage();
+                saveToServer();
             });
 
             row.addEventListener("dragover", e => {
