@@ -211,16 +211,15 @@
 
   return rows.map(row =>
     [...row.querySelectorAll("td")]
-      .slice(1, 13) // 번호 컬럼 제외
+      .slice(0, 12)
       .map((cell, i) => {
-
-        // ✅ [분류] 컬럼 (index 8)
-        if (i === 8) {
+        // ✅ [분류] 컬럼 (index 9)
+        if (i === 9) {
           return cell.querySelector(".tag")?.innerText.trim() || "";
         }
 
-        // ✅ 나머지는 모두 순수 텍스트로
-        return cell.innerText.replace(/\n+/g, "\n").trim();
+        // ✅ 나머지 컬럼
+        return cell.innerText.trim();
       })
   );
 }
@@ -446,37 +445,33 @@ if (i === 9) {
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
-      console.log("불러온 데이터:", data);
-
       const table = document.getElementById("featureTable");
 
+      // 기존 행 제거
       table
         .querySelectorAll("tr:not(.row-input):not(:first-child)")
         .forEach(tr => tr.remove());
 
+      // ❗ slice(1) 제거
       data.forEach(row => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
           <td>0</td>
-          <td>${row[1] || ""}</td>
-          <td>${row[2] || ""}</td>
-          <td>${row[3] || ""}</td>
-          <td>${row[4] || ""}</td>
-          <td>${row[5] || ""}</td>
-          <td>${row[6] || ""}</td>
-          <td>${row[7] || ""}</td>
-          <td>${row[8] || ""}</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>${row[6]}</td>
+          <td>${row[7]}</td>
+          <td>${row[8]}</td>
+          <td><span class="tag ${row[9]}">${row[9]}</span></td>
+          <td>${row[10]}</td>
+          <td>${row[11]}</td>
           <td>
-            <span class="tag ${row[9] || ""}">
-              ${row[9] || ""}
-            </span>
-          </td>
-          <td>${row[10] || ""}</td>
-          <td>${row[11] || ""}</td>
-          <td>
-            <button onclick="editRow(this)">수정</button>
-            <button onclick="deleteRow(this)">삭제</button>
+            <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
           </td>
         `;
 
@@ -485,20 +480,10 @@ if (i === 9) {
 
       updateRowNumbers();
       enableRowDrag();
-    })
-    .catch(err => console.error("불러오기 오류:", err));
+    });
 }
-
 </script>
 
 
 </body>
 </html>
-
-
-
-
-
-
-
-
