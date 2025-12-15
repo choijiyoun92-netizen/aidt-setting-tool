@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDT 기능 분류 작업 템플릿</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f1f1f1;
+            text-align: left;
+        }
+
+        .row-input {
+            background: #fafafa;
+        }
+
+        input, select {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 7px;
+            border-radius: 6px;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 14px;
+            background: #0078ff;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #005fcc;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .필수 { background: #ff5c5c; }
+        .선택 { background: #ffa726; }
+        .부가 { background: #42a5f5; }
+
+        .action-btn {
+            padding: 6px 10px;
+            margin: 0 3px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .edit-btn { background: #4caf50; color: #fff; }
+        .delete-btn { background: #e53935; color: #fff; }
+        .save-btn { background: #1976d2; color: #fff; }
+        .cancel-btn { background: #757575; color: #fff; }
+
+        tr.dragging {
+            opacity: 0.5;
+            background: #dbeafe !important;
+        }
+
+        textarea {
+                width: 100%;
+                    border: 1px solid #ccc;
+                padding: 7px;
+                border-radius: 6px;
+                font-size: 13px;
+                box-sizing: border-box;
+                resize: vertical;
+                font-family: inherit;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>AIDT 기능 분류 작업 템플릿(for. LITE 버전)</h1>
+
+<div class="container">
+
+    <table id="featureTable">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>기능명</th>
+                <th>기능 설명</th>
+                <th>현재 위치</th>
+                <th>사용 빈도</th>
+                <th>중요도</th>
+                <th>복잡도</th>
+                <th>CS 발생률</th>
+                <th>자동화 여부</th>
+                <th>분류</th>
+                <th>LITE 버전 적용</th>
+                <th>비고</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+
+        <!-- 입력 행 -->
+        <tr class="row-input">
+            <td></td>
+            <td><textarea id="f-name" rows="2"></textarea></td>
+            <td><textarea id="f-desc" rows="3"></textarea></td>
+            <td><textarea id="f-location" rows="2"></textarea></td>
+
+            <td>
+                <select id="f-use">
+                    <option value="높음">높음</option>
+                    <option value="중간">중간</option>
+                    <option value="낮음">낮음</option>
+                </select>
+            </td>
+            <td>
+                <select id="f-important">
+                    <option value="필수">필수</option>
+                    <option value="중간">중간</option>
+                    <option value="낮음">낮음</option>
+                </select>
+            </td>
+            <td>
+                <select id="f-complex">
+                    <option value="높음">높음</option>
+                    <option value="중간">중간</option>
+                    <option value="낮음">낮음</option>
+                </select>
+            </td>
+            <td>
+                <select id="f-cs">
+                    <option value="높음">높음</option>
+                    <option value="중간">중간</option>
+                    <option value="낮음">낮음</option>
+                </select>
+            </td>
+            <td>
+                <select id="f-auto">
+                    <option value="가능">가능</option>
+                    <option value="불가">불가</option>
+                </select>
+            </td>
+            <td>
+                <select id="f-type">
+                    <option value="필수">필수</option>
+                    <option value="선택">선택</option>
+                    <option value="부가">부가</option>
+                </select>
+            </td>
+            <td>
+                <select id="f-lite">
+                    <option value="보임">보임</option>
+                    <option value="단순화">단순화</option>
+                    <option value="숨김">숨김</option>
+                </select>
+            </td>
+            <td><input id="f-etc"></td>
+            <td></td>
+        </tr>
+
+    </table>
+
+    <button onclick="addRow()">+ 기능 추가</button>
+
+</div>
+
+<script>
+    const textareaCols = [1, 2, 3]; // 기능명, 기능 설명, 현재 위치
+    function saveToLocalStorage() {
+    const table = document.getElementById("featureTable");
+    const rows = [...table.querySelectorAll("tr")].slice(2);
+
+    const data = rows.map(row => {
+        return [...row.querySelectorAll("td")]
+            .slice(1, 12)
+            .map((cell, i) => {
+
+                // 🔥 분류 컬럼 (index 8) → 무조건 "텍스트만"
+                if (i === 8) {
+    const tag = cell.querySelector(".tag");
+    return tag ? tag.innerText.trim() : cell.innerText.trim();
+}
+                return cell.innerHTML.trim();
+            });
+    });
+
+    localStorage.setItem("featureData", JSON.stringify(data));
+}
+
+    function loadFromLocalStorage() {
+        const saved = localStorage.getItem("featureData");
+        if (!saved) return;
+
+        const rows = JSON.parse(saved);
+        const table = document.getElementById("featureTable");
+
+        rows.forEach(cols => {
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>0</td>
+                <td>${cols[0]}</td>
+                <td>${cols[1]}</td>
+                <td>${cols[2]}</td>
+                <td>${cols[3]}</td>
+                <td>${cols[4]}</td>
+                <td>${cols[5]}</td>
+                <td>${cols[6]}</td>
+                <td>${cols[7]}</td>
+                <td><span class="tag ${cols[8]}">${cols[8]}</span></td>
+                <td>${cols[9]}</td>
+                <td>${cols[10]}</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
+                    <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
+                </td>
+            `;
+            table.appendChild(newRow);
+        });
+
+        updateRowNumbers();
+    }
+
+    window.onload = () => {
+        loadFromLocalStorage();
+        enableRowDrag();
+    };
+
+    function addRow() {
+    const table = document.getElementById("featureTable");
+
+    const name = document.getElementById("f-name").value.replace(/\n/g, "<br>");
+    const desc = document.getElementById("f-desc").value.replace(/\n/g, "<br>");
+    const loc  = document.getElementById("f-location").value.replace(/\n/g, "<br>");
+
+
+    // 기본값 지정
+    const use = document.getElementById("f-use").value || "높음";
+    const important = document.getElementById("f-important").value || "필수";
+    const complex = document.getElementById("f-complex").value || "높음";
+    const cs = document.getElementById("f-cs").value || "높음";
+    const auto = document.getElementById("f-auto").value || "가능";
+    const type = document.getElementById("f-type").value || "필수";
+    const lite = document.getElementById("f-lite").value || "보임";
+    const etc = document.getElementById("f-etc").value;
+    
+
+    if (!name.trim()) {
+        alert("기능명을 입력해주세요.");
+        return;
+    }
+
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+        <td>0</td>
+        <td>${name}</td>
+        <td>${desc}</td>
+        <td>${loc}</td>
+        <td>${use}</td>
+        <td>${important}</td>
+        <td>${complex}</td>
+        <td>${cs}</td>
+        <td>${auto}</td>
+        <td><span class="tag ${type}">${type}</span></td>
+        <td>${lite}</td>
+        <td>${etc}</td>
+        <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
+        </td>
+    `;
+
+    table.appendChild(newRow);
+
+    // 입력칸 초기화
+    document.querySelectorAll(".row-input input").forEach(el => el.value = "");
+    document.getElementById("f-use").value = "높음";
+    document.getElementById("f-important").value = "필수";
+    document.getElementById("f-complex").value = "높음";
+    document.getElementById("f-cs").value = "높음";
+    document.getElementById("f-auto").value = "가능";
+    document.getElementById("f-type").value = "필수";
+    document.getElementById("f-lite").value = "보임";
+
+    updateRowNumbers();
+    saveToLocalStorage();
+    enableRowDrag();
+}
+
+
+    function deleteRow(btn) {
+        if (confirm("정말 삭제하시겠습니까?")) {
+            btn.closest("tr").remove();
+            updateRowNumbers();
+            saveToLocalStorage();
+        }
+    }
+
+    // ✅ 번호 갱신만, 드래그 순서는 그대로 유지
+    function updateRowNumbers() {
+        const table = document.getElementById("featureTable");
+        const rows = [...table.querySelectorAll("tr")].slice(2);
+
+        rows.forEach((row, i) => {
+            row.cells[0].innerText = i + 1;
+        });
+    }
+
+    function editRow(btn) {
+        const row = btn.closest("tr");
+        const cells = row.querySelectorAll("td");
+
+        const selectOptions = {
+            4: ["높음","중간","낮음"],
+            5: ["필수","중간","낮음"],
+            6: ["높음","중간","낮음"],
+            7: ["높음","중간","낮음"],
+            8: ["가능","불가"],
+            9: ["필수","선택","부가"],
+            10: ["보임","단순화","숨김"]
+        };
+
+        cells.forEach((cell, i) => {
+    if (i === 0 || i === 12) return;
+
+    let value = "";
+
+if (i === 9) {
+    value = cell.querySelector(".tag")?.innerText.trim() || "";
+} else {
+    value = cell.innerHTML.replace(/<br>/g, "\n").trim();
+}
+
+    if (selectOptions[i]) {
+    cell.innerHTML = `
+        <select>
+            ${selectOptions[i]
+                .map(v => `<option value="${v}" ${v === value ? "selected" : ""}>${v}</option>`)
+                .join("")}
+        </select>
+    `;
+} else if (textareaCols.includes(i)) {
+    cell.innerHTML = `<textarea rows="3">${value}</textarea>`;
+} else {
+    cell.innerHTML = `<input value="${value}">`;
+}
+
+});
+
+        btn.outerHTML = `<button class="action-btn save-btn" onclick="saveRow(this)">저장</button>`;
+        row.querySelector(".delete-btn").outerHTML =
+            `<button class="action-btn cancel-btn" onclick="cancelEdit(this)">취소</button>`;
+    }
+
+    function saveRow(btn) {
+    const row = btn.closest("tr");
+    const cells = row.querySelectorAll("td");
+
+    cells.forEach((cell, i) => {
+        if (i === 0 || i === 12) return;
+
+        const textarea = cell.querySelector("textarea");
+        const input = cell.querySelector("input");
+        const select = cell.querySelector("select");
+
+        if (textarea) {
+            // textarea → 줄바꿈 유지
+            cell.innerHTML = textarea.value.replace(/\n/g, "<br>");
+        } else if (input) {
+            cell.innerHTML = input.value;
+        } else if (select) {
+            const v = select.value;
+            if (i === 9) {
+                cell.innerHTML = `<span class="tag ${v}">${v}</span>`;
+            } else {
+                cell.innerHTML = v;
+            }
+        }
+    });
+
+    btn.outerHTML = `<button class="action-btn edit-btn" onclick="editRow(this)">수정</button>`;
+    row.querySelector(".cancel-btn").outerHTML =
+        `<button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>`;
+
+    updateRowNumbers();
+    saveToLocalStorage();
+}
+
+
+    function cancelEdit(btn) {
+        location.reload();
+    }
+
+    function enableRowDrag() {
+        const table = document.getElementById("featureTable");
+        let draggingRow = null;
+
+        table.querySelectorAll("tr:not(.row-input):not(:first-child)").forEach(row => {
+            row.draggable = true;
+
+            row.addEventListener("dragstart", e => {
+                draggingRow = row;
+                row.classList.add("dragging");
+                e.dataTransfer.effectAllowed = "move";
+            });
+
+            row.addEventListener("dragend", () => {
+                draggingRow.classList.remove("dragging");
+                draggingRow = null;
+                updateRowNumbers();
+                saveToLocalStorage();
+            });
+
+            row.addEventListener("dragover", e => {
+                e.preventDefault();
+                const target = e.currentTarget;
+
+                if (!draggingRow || draggingRow === target) return;
+
+                const rect = target.getBoundingClientRect();
+                const middle = rect.top + rect.height / 2;
+
+                if (e.clientY < middle) {
+                    target.parentNode.insertBefore(draggingRow, target);
+                } else {
+                    target.parentNode.insertBefore(draggingRow, target.nextSibling);
+                }
+            });
+        });
+    }
+</script>
+
+
+</body>
+</html>
