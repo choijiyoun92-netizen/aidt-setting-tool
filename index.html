@@ -446,9 +446,10 @@ if (i === 9) {
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
+      console.log("불러온 데이터:", data);
+
       const table = document.getElementById("featureTable");
 
-      // 기존 행 제거
       table
         .querySelectorAll("tr:not(.row-input):not(:first-child)")
         .forEach(tr => tr.remove());
@@ -458,24 +459,24 @@ if (i === 9) {
 
         tr.innerHTML = `
           <td>0</td>
-          <td>${row["기능명"] || ""}</td>
-          <td>${row["기능설명"] || ""}</td>
-          <td>${row["현재위치"] || ""}</td>
-          <td>${row["사용빈도"] || ""}</td>
-          <td>${row["중요도"] || ""}</td>
-          <td>${row["복잡도"] || ""}</td>
-          <td>${row["CS"] || ""}</td>
-          <td>${row["자동화"] || ""}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[2] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[4] || ""}</td>
+          <td>${row[5] || ""}</td>
+          <td>${row[6] || ""}</td>
+          <td>${row[7] || ""}</td>
+          <td>${row[8] || ""}</td>
           <td>
-            <span class="tag ${row["분류"] || ""}">
-              ${row["분류"] || ""}
+            <span class="tag ${row[9] || ""}">
+              ${row[9] || ""}
             </span>
           </td>
-          <td>${row["LITE"] || ""}</td>
-          <td>${row["비고"] || ""}</td>
+          <td>${row[10] || ""}</td>
+          <td>${row[11] || ""}</td>
           <td>
-            <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
-            <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
+            <button onclick="editRow(this)">수정</button>
+            <button onclick="deleteRow(this)">삭제</button>
           </td>
         `;
 
@@ -484,7 +485,8 @@ if (i === 9) {
 
       updateRowNumbers();
       enableRowDrag();
-    });
+    })
+    .catch(err => console.error("불러오기 오류:", err));
 }
 
 </script>
@@ -492,6 +494,7 @@ if (i === 9) {
 
 </body>
 </html>
+
 
 
 
