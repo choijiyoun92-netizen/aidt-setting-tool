@@ -459,17 +459,19 @@ if (i === 9) {
 
         tr.innerHTML = `
   <td>0</td>
-  <td>${row[0]}</td>
-  <td>${row[1]}</td>
-  <td>${row[2]}</td>
-  <td>${row[3]}</td>
-  <td>${row[4]}</td>
-  <td>${row[5]}</td>
-  <td>${row[6]}</td>
-  <td>${row[7]}</td>
-  <td><span class="tag ${row[8]}">${row[8]}</span></td>
-  <td>${row[9]}</td>
-  <td>${row[10]}</td>
+  <td>${row[0] || ""}</td>   <!-- 기능명 -->
+  <td>${row[1] || ""}</td>   <!-- 기능설명 -->
+  <td>${row[2] || ""}</td>   <!-- 현재위치 -->
+  <td>${row[3] || ""}</td>   <!-- 사용빈도 -->
+  <td>${row[4] || ""}</td>   <!-- 중요도 -->
+  <td>${row[5] || ""}</td>   <!-- 복잡도 -->
+  <td>${row[6] || ""}</td>   <!-- CS -->
+  <td>${row[7] || ""}</td>   <!-- 자동화 -->
+  <td>
+    <span class="tag ${row[8] || ""}">${row[8] || ""}</span>
+  </td>                      <!-- 분류 -->
+  <td>${row[9] || ""}</td>   <!-- LITE -->
+  <td>${row[10] || ""}</td>  <!-- 비고 -->
   <td>
     <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
     <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
@@ -488,6 +490,7 @@ if (i === 9) {
 
 </body>
 </html>
+
 
 
 
