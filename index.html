@@ -228,6 +228,7 @@ function saveToServer() {
   });
 }
     window.onload = () => {
+        loadFromServer();
         enableRowDrag();
     };
 
@@ -438,10 +439,52 @@ if (i === 9) {
             });
         });
     }
+    function loadFromServer() {
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+      const table = document.getElementById("featureTable");
+
+      // 🔹 기존 행 전부 제거 (입력 행 제외)
+      table
+        .querySelectorAll("tr:not(.row-input):not(:first-child)")
+        .forEach(tr => tr.remove());
+
+      // 🔹 첫 줄이 헤더라면 제거
+      data.slice(1).forEach(row => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>0</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>${row[6]}</td>
+          <td>${row[7]}</td>
+          <td>${row[8]}</td>
+          <td><span class="tag ${row[9]}">${row[9]}</span></td>
+          <td>${row[10]}</td>
+          <td>${row[11]}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">수정</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">삭제</button>
+          </td>
+        `;
+
+        table.appendChild(tr);
+      });
+
+      updateRowNumbers();
+      enableRowDrag();
+    });
+}
 </script>
 
 
 </body>
 </html>
+
 
 
