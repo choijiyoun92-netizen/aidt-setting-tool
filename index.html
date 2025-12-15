@@ -451,7 +451,7 @@ if (i === 9) {
         .forEach(tr => tr.remove());
 
       // 🔹 첫 줄이 헤더라면 제거
-      data.slice(1).forEach(row => {
+      data.forEach(row => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
@@ -485,6 +485,7 @@ if (i === 9) {
 
 </body>
 </html>
+
 
 
 
