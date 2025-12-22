@@ -111,6 +111,10 @@
                 font-family: inherit;
         }
 
+        .multiline-cell {
+            white-space: pre-line;
+         }
+
     </style>
 </head>
 <body>
@@ -132,7 +136,7 @@
                 <th>CS 발생률</th>
                 <th>자동화 여부</th>
                 <th>분류</th>
-                <th>LITE 버전 적용</th>
+                <th>LITE 버전</th>
                 <th>비고</th>
                 <th>관리</th>
             </tr>
@@ -261,9 +265,9 @@ function saveToServer() {
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
         <td>0</td>
-        <td>${name}</td>
-        <td>${desc}</td>
-        <td>${loc}</td>
+        <td class="multiline-cell">${name}</td>
+        <td class="multiline-cell">${desc}</td>
+        <td class="multiline-cell">${loc}</td>
         <td>${use}</td>
         <td>${important}</td>
         <td>${complex}</td>
@@ -458,9 +462,9 @@ if (i === 9) {
 
         tr.innerHTML = `
           <td>0</td>
-          <td>${row[1]}</td>
-          <td>${row[2]}</td>
-          <td>${row[3]}</td>
+          <td class="multiline-cell">${row[1]}</td>
+          <td class="multiline-cell">${row[2]}</td>
+          <td class="multiline-cell">${row[3]}</td>
           <td>${row[4]}</td>
           <td>${row[5]}</td>
           <td>${row[6]}</td>
